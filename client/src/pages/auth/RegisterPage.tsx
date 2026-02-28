@@ -18,7 +18,6 @@ const schema = z.object({
   phone: z.string().optional(),
   password: z.string().min(8, 'Password must be at least 8 characters'),
   confirmPassword: z.string(),
-  role: z.enum(['BUYER', 'SELLER']),
   terms: z.literal(true, { errorMap: () => ({ message: 'You must accept the terms' }) }),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Passwords don't match",
@@ -36,7 +35,6 @@ const RegisterPage: React.FC = () => {
 
   const { register, handleSubmit, watch, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
-    defaultValues: { role: 'BUYER' },
   });
 
   const password = watch('password', '');
@@ -106,29 +104,6 @@ const RegisterPage: React.FC = () => {
 
         <div className="card p-8">
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center">Create Account</h1>
-
-          {/* Role Selector */}
-          <div className="mb-5">
-            <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">I want to...</p>
-            <div className="grid grid-cols-2 gap-3">
-              {(['BUYER', 'SELLER'] as const).map((role) => (
-                <label
-                  key={role}
-                  className={`flex items-center gap-2 border-2 rounded-xl p-3 cursor-pointer transition-all ${
-                    watch('role') === role
-                      ? 'border-primary-500 bg-primary-50 dark:bg-primary-950'
-                      : 'border-gray-200 dark:border-gray-700 hover:border-primary-300'
-                  }`}
-                >
-                  <input {...register('role')} type="radio" value={role} className="hidden" />
-                  <span className="text-xl">{role === 'BUYER' ? '🛍️' : '🏪'}</span>
-                  <span className="text-sm font-semibold text-gray-800 dark:text-gray-200">
-                    {role === 'BUYER' ? 'Buy Products' : 'Sell Products'}
-                  </span>
-                </label>
-              ))}
-            </div>
-          </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div className="grid grid-cols-2 gap-3">

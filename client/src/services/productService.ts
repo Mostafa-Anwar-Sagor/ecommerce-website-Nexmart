@@ -27,7 +27,7 @@ export const productService = {
   },
 
   async getProductBySlug(slug: string): Promise<Product> {
-    const { data } = await api.get(`/products/slug/${slug}`);
+    const { data } = await api.get(`/products/${slug}`);
     return data.data;
   },
 

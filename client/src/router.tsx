@@ -24,11 +24,13 @@ const RegisterPage = lazy(() => import('./pages/auth/RegisterPage'));
 // Buyer
 const ProfilePage = lazy(() => import('./pages/buyer/ProfilePage'));
 const OrdersPage = lazy(() => import('./pages/buyer/OrdersPage'));
+const OrderTrackingPage = lazy(() => import('./pages/buyer/OrderTrackingPage'));
 const WishlistPage = lazy(() => import('./pages/buyer/WishlistPage'));
 const ChatPage = lazy(() => import('./pages/buyer/ChatPage'));
 const VouchersPage = lazy(() => import('./pages/buyer/VouchersPage'));
 
 // Seller
+const SellerRegisterPage = lazy(() => import('./pages/seller/SellerRegisterPage'));
 const SellerLayout = lazy(() => import('./pages/seller/SellerLayout'));
 const SellerDashboardPage = lazy(() => import('./pages/seller/SellerDashboardPage'));
 const SellerProductsPage = lazy(() => import('./pages/seller/SellerProductsPage'));
@@ -108,6 +110,10 @@ const router = createBrowserRouter([
         element: <ProtectedRoute><Suspense fallback={<PageLoader />}><OrdersPage /></Suspense></ProtectedRoute>,
       },
       {
+        path: 'order-tracking/:id',
+        element: <ProtectedRoute><Suspense fallback={<PageLoader />}><OrderTrackingPage /></Suspense></ProtectedRoute>,
+      },
+      {
         path: 'wishlist',
         element: <ProtectedRoute><Suspense fallback={<PageLoader />}><WishlistPage /></Suspense></ProtectedRoute>,
       },
@@ -126,6 +132,10 @@ const router = createBrowserRouter([
       {
         path: 'auth/register',
         element: <Suspense fallback={<PageLoader />}><RegisterPage /></Suspense>,
+      },
+      {
+        path: 'seller/register',
+        element: <ProtectedRoute><Suspense fallback={<PageLoader />}><SellerRegisterPage /></Suspense></ProtectedRoute>,
       },
     ],
   },

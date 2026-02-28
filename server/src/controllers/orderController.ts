@@ -68,12 +68,19 @@ export const createOrder = async (req: AuthRequest, res: Response) => {
   const shippingFee = subtotal >= 30 ? 0 : 5.99;
   const total = Math.max(0, subtotal - discount + shippingFee);
 
-  // Create Stripe PaymentIntent
-  const paymentIntent = await stripe.paymentIntents.create({
-    amount: Math.round(total * 100),
-    currency: 'usd',
-    metadata: { userId: req.user!.id },
-  });
+  let paymentIntentId: string | null = null;
+  let clientSecret: string | null = null;
+
+  // Only create Stripe PaymentIntent for card payments
+  if (paymentMethod !== 'COD') {
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: Math.round(total * 100),
+      currency: 'usd',
+      metadata: { userId: req.user!.id },
+    });
+    paymentIntentId = paymentIntent.id;
+    clientSecret = paymentIntent.client_secret;
+  }
 
   const orderId = uuidv4();
   const order = await prisma.order.create({
@@ -87,7 +94,8 @@ export const createOrder = async (req: AuthRequest, res: Response) => {
       total,
       voucherId,
       paymentMethod,
-      paymentIntentId: paymentIntent.id,
+      paymentIntentId,
+      status: paymentMethod === 'COD' ? 'PROCESSING' : 'PENDING',
       items: {
         create: orderItems.map((item) => ({
           id: uuidv4(),
@@ -106,17 +114,49 @@ export const createOrder = async (req: AuthRequest, res: Response) => {
     },
   });
 
-  // Decrement stock (fire and forget)
-  for (const item of orderItems) {
-    prisma.product.update({
-      where: { id: item.productId },
-      data: { stock: { decrement: item.quantity }, soldCount: { increment: item.quantity } },
-    }).catch(() => {});
+  // Create initial tracking event — "Order Placed"
+  await prisma.tracking.create({
+    data: {
+      id: uuidv4(),
+      orderId,
+      status: paymentMethod === 'COD' ? 'PROCESSING' : 'PENDING',
+      carrier: 'NexMart',
+      description: paymentMethod === 'COD'
+        ? 'Order placed successfully. Cash on Delivery — preparing your order.'
+        : 'Order placed successfully. Awaiting payment confirmation.',
+    },
+  });
+
+  // Decrement stock
+  try {
+    await Promise.all(orderItems.map(item =>
+      prisma.product.update({
+        where: { id: item.productId },
+        data: { stock: { decrement: item.quantity }, soldCount: { increment: item.quantity } },
+      })
+    ));
+  } catch (err) {
+    console.error('Failed to update stock for order', orderId, err);
+  }
+
+  // Send notification for COD orders
+  if (paymentMethod === 'COD') {
+    await prisma.notification.create({
+      data: {
+        id: uuidv4(),
+        userId: req.user!.id,
+        type: 'ORDER',
+        title: 'Order Placed (COD)',
+        message: `Your order #${orderId.slice(0, 8)} has been placed. Pay on delivery: $${total.toFixed(2)}`,
+        data: JSON.stringify({ orderId }),
+      },
+    });
   }
 
   return successResponse(res, {
     order,
-    clientSecret: paymentIntent.client_secret,
+    clientSecret,
+    paymentMethod,
   }, 'Order created', 201);
 };
 
@@ -180,6 +220,17 @@ export const confirmPayment = async (req: AuthRequest, res: Response) => {
     include: { items: true },
   });
 
+  // Create tracking event for payment confirmation
+  await prisma.tracking.create({
+    data: {
+      id: uuidv4(),
+      orderId,
+      status: 'PROCESSING',
+      carrier: 'NexMart',
+      description: 'Payment confirmed. Your order is now being processed.',
+    },
+  });
+
   // Notify seller
   await prisma.notification.create({
     data: {
@@ -211,11 +262,15 @@ export const cancelOrder = async (req: AuthRequest, res: Response) => {
   await prisma.order.update({ where: { id }, data: { status: 'CANCELLED' } });
 
   // Restore stock
-  for (const item of order.items) {
-    prisma.product.update({
-      where: { id: item.productId },
-      data: { stock: { increment: item.quantity }, soldCount: { decrement: item.quantity } },
-    }).catch(() => {});
+  try {
+    await Promise.all(order.items.map(item =>
+      prisma.product.update({
+        where: { id: item.productId },
+        data: { stock: { increment: item.quantity }, soldCount: { decrement: item.quantity } },
+      })
+    ));
+  } catch (err) {
+    console.error('Failed to restore stock for cancelled order', id, err);
   }
 
   return successResponse(res, null, 'Order cancelled successfully');

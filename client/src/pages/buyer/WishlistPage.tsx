@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Heart, ShoppingCart, Trash2 } from 'lucide-react';
-import axios from 'axios';
+import api from '../../services/api';
 import { useDispatch } from 'react-redux';
 import { addToCart } from '../../store/slices/cartSlice';
 import { toast } from 'react-hot-toast';
@@ -13,11 +13,11 @@ export default function WishlistPage() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    axios.get('/api/user/wishlist').then(r => setItems(r.data.data?.items || [])).finally(() => setLoading(false));
+    api.get('/wishlist').then(r => setItems(r.data.data?.items || [])).finally(() => setLoading(false));
   }, []);
 
   const remove = async (productId: string) => {
-    await axios.delete(`/api/user/wishlist/${productId}`);
+    await api.delete(`/wishlist/${productId}`);
     setItems(prev => prev.filter(i => i.product?.id !== productId));
     toast.success('Removed from wishlist');
   };

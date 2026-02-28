@@ -110,6 +110,7 @@ const AIChat: React.FC = () => {
 
   // Render markdown-like content
   const renderContent = (content: string) => {
+    if (!content) return null;
     const parts = content.split('\n');
     return parts.map((line, i) => {
       // Bold text **text**

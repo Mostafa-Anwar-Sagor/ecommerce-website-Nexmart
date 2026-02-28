@@ -119,7 +119,7 @@ export const getProductBySlug = async (req: AuthRequest, res: Response) => {
 export const createProduct = async (req: AuthRequest, res: Response) => {
   const {
     name, description, shortDescription, price, discountPrice, stock, images,
-    categoryId, tags, specifications, variants, freeShipping, weight, dimensions,
+    categoryId, tags, specifications, variants, freeShipping, weight, dimensions, sku,
   } = req.body;
 
   if (!name || !price || !categoryId || !images?.length) {
@@ -150,6 +150,7 @@ export const createProduct = async (req: AuthRequest, res: Response) => {
       freeShipping: freeShipping || false,
       weight: weight ? parseFloat(weight) : null,
       dimensions: dimensions || null,
+      sku: sku || null,
     },
     include: {
       category: true,

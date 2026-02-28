@@ -136,7 +136,6 @@ const LoginPage: React.FC = () => {
             <div className="space-y-1.5">
               {[
                 { role: 'Admin', email: 'admin@nexmart.com', pass: 'Admin@123456' },
-                { role: 'Seller', email: 'seller@nexmart.com', pass: 'Seller@123456' },
                 { role: 'Buyer', email: 'buyer@nexmart.com', pass: 'Buyer@123456' },
               ].map(({ role, email, pass }) => (
                 <button

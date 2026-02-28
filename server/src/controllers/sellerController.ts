@@ -6,30 +6,39 @@ import { v4 as uuidv4 } from 'uuid';
 
 export const createShop = async (req: AuthRequest, res: Response) => {
   const existing = await prisma.shop.findUnique({ where: { userId: req.user!.id } });
-  if (existing) throw ApiError.conflict('You already have a shop');
+  if (existing) throw ApiError.conflict('You already have a shop application');
 
-  const { name, description, logo, coverImage, phone, email, address } = req.body;
+  const { name, shopType, description, logo, coverImage, phone, email, address } = req.body;
   if (!name) throw ApiError.badRequest('Shop name is required');
 
   const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') + '-' + Date.now();
 
+  // Shop is created with PENDING status — admin must approve before user becomes SELLER
   const shop = await prisma.shop.create({
     data: {
       id: uuidv4(),
       userId: req.user!.id,
       name,
       slug,
+      shopType,
       description,
       logo,
       coverImage,
       phone,
       email,
       address,
+      status: 'PENDING',
     },
   });
 
-  await prisma.user.update({ where: { id: req.user!.id }, data: { role: 'SELLER' } });
-  return successResponse(res, shop, 'Shop created successfully', 201);
+  return successResponse(res, shop, 'Shop application submitted! Awaiting admin approval.', 201);
+};
+
+// Buyer can check their own shop application status
+export const getMyShopApplication = async (req: AuthRequest, res: Response) => {
+  const shop = await prisma.shop.findUnique({ where: { userId: req.user!.id } });
+  if (!shop) return successResponse(res, null, 'No application found');
+  return successResponse(res, shop);
 };
 
 export const getMyShop = async (req: AuthRequest, res: Response) => {

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Send, MessageCircle, Image as ImageIcon } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
-import axios from 'axios';
+import api from '../../services/api';
 import { io, Socket } from 'socket.io-client';
 
 let socket: Socket | null = null;
@@ -29,14 +29,14 @@ export default function ChatPage() {
     socket.on('user:typing', ({ userId }: any) => {
       if (userId !== user?.id) { setTyping(true); setTimeout(() => setTyping(false), 3000); }
     });
-    axios.get('/api/chat/conversations').then(r => setConversations(r.data.data?.conversations || [])).finally(() => setLoading(false));
+    api.get('/chat/conversations').then(r => setConversations(r.data.data?.conversations || [])).finally(() => setLoading(false));
     return () => { socket?.disconnect(); };
   }, [accessToken]);
 
   useEffect(() => {
     if (!activeConv) return;
     socket?.emit('join:conversation', activeConv.id);
-    axios.get(`/api/chat/conversations/${activeConv.id}/messages`).then(r => {
+    api.get(`/chat/conversations/${activeConv.id}/messages`).then(r => {
       setMessages(r.data.data?.messages || []);
       setTimeout(() => messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' }), 100);
     });

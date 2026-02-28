@@ -93,6 +93,7 @@ model Shop {
   id            String     @id @default(cuid())
   name          String
   slug          String     @unique
+  shopType      String?    // e.g. Electronics, Fashion, Food & Beverage, etc.
   description   String?
   logo          String?
   banner        String?
@@ -105,7 +106,7 @@ model Shop {
   totalSales    Int        @default(0)
   totalRevenue  Float      @default(0)
   isVerified    Boolean    @default(false)
-  status        ShopStatus @default(ACTIVE)
+  status        ShopStatus @default(PENDING)
   responseRate  Float      @default(100)
   followerCount Int        @default(0)
   userId        String     @unique

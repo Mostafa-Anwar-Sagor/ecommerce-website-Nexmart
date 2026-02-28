@@ -26,6 +26,10 @@ export default function ProductPage() {
   const [activeTab, setActiveTab] = useState<'description' | 'reviews' | 'shipping'>('description');
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [slug]);
+
+  useEffect(() => {
     if (!slug) return;
     const fetchProduct = async () => {
       setLoading(true);

@@ -139,7 +139,22 @@ router.patch('/shops/:id/status', async (req, res) => {
   const { status } = req.body;
   const valid = ['PENDING', 'ACTIVE', 'SUSPENDED', 'BANNED'];
   if (!valid.includes(status)) throw ApiError.badRequest('Invalid status');
-  const shop = await prisma.shop.update({ where: { id: req.params.id }, data: { status } });
+
+  const shop = await prisma.shop.update({
+    where: { id: req.params.id },
+    data: { status },
+    include: { seller: { select: { id: true, role: true } } },
+  });
+
+  // When admin approves (ACTIVE) → promote user to SELLER
+  if (status === 'ACTIVE' && shop.seller.role !== 'SELLER') {
+    await prisma.user.update({ where: { id: shop.seller.id }, data: { role: 'SELLER' } });
+  }
+  // When admin bans/suspends → demote back to BUYER
+  if ((status === 'BANNED' || status === 'SUSPENDED') && shop.seller.role === 'SELLER') {
+    await prisma.user.update({ where: { id: shop.seller.id }, data: { role: 'BUYER' } });
+  }
+
   return successResponse(res, { id: shop.id, status: shop.status }, 'Shop status updated');
 });
 

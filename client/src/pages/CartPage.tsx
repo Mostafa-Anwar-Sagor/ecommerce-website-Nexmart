@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { Trash2, Plus, Minus, ShoppingBag, Tag, ArrowRight } from 'lucide-react';
 import { removeFromCart, updateQuantity, clearCart } from '../store/slices/cartSlice';
 import { RootState } from '../store';
+import api from '../services/api';
 import toast from 'react-hot-toast';
 
 export default function CartPage() {
@@ -84,7 +85,7 @@ export default function CartPage() {
                             <span className="font-semibold text-gray-900 dark:text-white">
                               ${((item.product.discountPrice || item.product.price) * item.quantity).toFixed(2)}
                             </span>
-                            <button onClick={() => { dispatch(removeFromCart(item.product.id)); toast.success('Removed from cart'); }}
+                            <button onClick={() => { dispatch(removeFromCart(item.id)); toast.success('Removed from cart'); }}
                               className="text-red-400 hover:text-red-600 transition-colors">
                               <Trash2 className="w-4 h-4" />
                             </button>
@@ -114,7 +115,17 @@ export default function CartPage() {
                     <input type="text" placeholder="Voucher code" value={voucher} onChange={(e) => setVoucher(e.target.value)}
                       className="input-field pl-9 text-sm" />
                   </div>
-                  <button className="px-4 py-2 text-sm font-medium border-2 border-primary text-primary rounded-lg hover:bg-primary/5 transition-colors">
+                  <button
+                    onClick={async () => {
+                      if (!voucher.trim()) return toast.error('Enter a voucher code');
+                      try {
+                        const res = await api.post('/vouchers/validate', { code: voucher, subtotal });
+                        toast.success(`Voucher applied! You save $${res.data.data.discount.toFixed(2)}`);
+                      } catch (err: any) {
+                        toast.error(err.response?.data?.message || 'Invalid voucher code');
+                      }
+                    }}
+                    className="px-4 py-2 text-sm font-medium border-2 border-primary text-primary rounded-lg hover:bg-primary/5 transition-colors">
                     Apply
                   </button>
                 </div>

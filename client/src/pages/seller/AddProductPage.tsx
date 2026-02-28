@@ -108,7 +108,8 @@ export default function AddProductPage() {
       const payload = {
         ...data,
         price: Number(data.price),
-        salePrice: data.salePrice ? Number(data.salePrice) : undefined,
+        discountPrice: data.salePrice ? Number(data.salePrice) : undefined,
+        sku: data.sku || undefined,
         stock: Number(data.stock),
         images: imageUrls,
         tags: data.tags ? data.tags.split(',').map(t => t.trim()).filter(Boolean) : [],

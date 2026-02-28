@@ -15,7 +15,14 @@ export const aiService = {
       messages: messages.map((m) => ({ role: m.role, content: m.content })),
       message: userMessage,
     });
-    return data.data;
+    const result = data.data || {};
+    return {
+      id: Date.now().toString(),
+      role: 'assistant',
+      content: result.reply || result.content || 'Sorry, I could not generate a response.',
+      products: result.productSuggestions || result.products || [],
+      createdAt: new Date().toISOString(),
+    };
   },
 
   // AI Product Recommendations

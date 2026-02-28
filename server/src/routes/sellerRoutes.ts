@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import {
-  createShop, getMyShop, updateShop, getSellerAnalytics,
+  createShop, getMyShop, getMyShopApplication, updateShop, getSellerAnalytics,
   getSellerOrders, updateOrderStatus, getOrderTracking,
   addTrackingUpdate, getShippingOverview,
 } from '../controllers/sellerController';
@@ -8,7 +8,8 @@ import { authenticate, requireSeller } from '../middleware/auth';
 
 const router = Router();
 
-router.post('/shop', authenticate, createShop);
+router.post('/shop', authenticate, createShop);           // Any logged-in user can apply
+router.get('/shop/application', authenticate, getMyShopApplication); // Check application status
 router.get('/shop', authenticate, requireSeller, getMyShop);
 router.patch('/shop', authenticate, requireSeller, updateShop);
 router.get('/analytics', authenticate, requireSeller, getSellerAnalytics);
