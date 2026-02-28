@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/nexmart-icon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="NexMart - AI-Powered E-Commerce Platform. Shop smarter with AI recommendations, visual search, and more." />
+    <meta name="keywords" content="ecommerce, online shopping, AI shopping, NexMart" />
+    <meta property="og:title" content="NexMart - Shop Smarter with AI" />
+    <meta property="og:description" content="Discover millions of products with AI-powered recommendations" />
+    <meta name="theme-color" content="#ee4d2d" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <title>NexMart - AI-Powered Shopping</title>
+    <script>
+      // Prevent theme flash
+      (function() {
+        const theme = localStorage.getItem('theme');
+        if (theme === 'dark') document.documentElement.classList.add('dark');
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
