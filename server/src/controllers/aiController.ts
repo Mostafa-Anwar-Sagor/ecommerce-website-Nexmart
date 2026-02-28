@@ -11,11 +11,18 @@ import { getSearchSuggestions, compareProducts, enhanceSearchQuery } from '../ai
 import { prisma } from '../config/database';
 
 export const chat = async (req: AuthRequest, res: Response) => {
-  const { messages } = req.body;
+  const { messages, message } = req.body;
   if (!messages || !Array.isArray(messages)) throw ApiError.badRequest('Messages array required');
-  if (messages.length === 0) throw ApiError.badRequest('At least one message required');
 
-  const result = await chatWithAssistant(messages, req.user?.id);
+  // The frontend sends previous messages in `messages` and the new user message as `message`
+  // Append the new message so the chatbot processes the latest input
+  const allMessages = message
+    ? [...messages, { role: 'user' as const, content: message }]
+    : messages;
+
+  if (allMessages.length === 0) throw ApiError.badRequest('At least one message required');
+
+  const result = await chatWithAssistant(allMessages, req.user?.id);
   return successResponse(res, result);
 };
 
