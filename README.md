@@ -331,7 +331,7 @@ Full API documentation available at `/api/health` after starting the server.
 
 ---
 
-### 📝 Product Management (Seller)
+### 📝 Product Management (admin)
 > Seller product management — add, edit, and manage inventory with AI description generator.
 
 <p align="center">
