@@ -1,7 +1,7 @@
 # NexMart — AI-Powered E-Commerce Platform
 
 <div align="center">
-  <img src="screenshots/hero.png" alt="NexMart Hero" width="100%" />
+  <img src="screenshots/landing page.png" alt="NexMart" width="100%" />
   
   <p>
     <strong>A full-stack, production-ready e-commerce platform with 7+ AI features, real-time chat, Stripe payments, and more.</strong>
@@ -241,13 +241,102 @@ Full API documentation available at `/api/health` after starting the server.
 
 ## 📱 Screenshots
 
-| Home | Product | Seller Dashboard |
-|---|---|---|
-| ![Home](screenshots/home.png) | ![Product](screenshots/product.png) | ![Dashboard](screenshots/dashboard.png) |
+### 🏠 Landing Page
+> The main storefront with hero banner, featured products, flash sales, and category browsing.
 
-| AI Chat | Checkout | Mobile |
-|---|---|---|
-| ![Chat](screenshots/nexbot.png) | ![Checkout](screenshots/checkout.png) | ![Mobile](screenshots/mobile.png) |
+<p align="center">
+  <img src="screenshots/landing page.png" alt="Landing Page" width="100%" />
+</p>
+
+---
+
+### 🛍️ Products Page
+> Browse, filter, sort, and search through the full product catalog with grid/list view.
+
+<p align="center">
+  <img src="screenshots/products.png" alt="Products Page" width="100%" />
+</p>
+
+---
+
+### 🤖 AI Chatbot (NexBot)
+> Conversational AI shopping assistant powered by GPT-4o-mini — finds products, answers questions, and gives personalized recommendations.
+
+<p align="center">
+  <img src="screenshots/chatbot.png" alt="AI Chatbot" width="100%" />
+</p>
+
+---
+
+### 📦 My Orders
+> Order history with status tracking, order details, and real-time delivery updates.
+
+<p align="center">
+  <img src="screenshots/my order.png" alt="My Orders" width="100%" />
+</p>
+
+---
+
+### 🎫 Vouchers
+> Voucher & coupon system with percentage and fixed discount codes.
+
+<p align="center">
+  <img src="screenshots/vouchers.png" alt="Vouchers" width="100%" />
+</p>
+
+---
+
+### 🏪 Become a Seller
+> Multi-step seller application form with image uploads, shop type selection, and admin approval workflow.
+
+<p align="center">
+  <img src="screenshots/become a seller form.png" alt="Become a Seller Form" width="100%" />
+</p>
+
+---
+
+### 📊 Admin Dashboard
+> Admin overview with revenue metrics, user stats, order analytics, and quick actions.
+
+<p align="center">
+  <img src="screenshots/Admin dashboard.png" alt="Admin Dashboard" width="100%" />
+</p>
+
+---
+
+### 👥 User Management (Admin)
+> Manage all users — view roles, verify accounts, update status, and monitor activity.
+
+<p align="center">
+  <img src="screenshots/user_management.png" alt="User Management" width="100%" />
+</p>
+
+---
+
+### 📦 Order Management (Admin)
+> Admin order management with status updates, filtering, and order details.
+
+<p align="center">
+  <img src="screenshots/Order management .png" alt="Order Management" width="100%" />
+</p>
+
+---
+
+### 🏬 Shop Management (Admin)
+> Approve/reject seller applications, manage shop statuses, and monitor marketplace shops.
+
+<p align="center">
+  <img src="screenshots/shop_management.png" alt="Shop Management" width="100%" />
+</p>
+
+---
+
+### 📝 Product Management (Seller)
+> Seller product management — add, edit, and manage inventory with AI description generator.
+
+<p align="center">
+  <img src="screenshots/products_management.png" alt="Product Management" width="100%" />
+</p>
 
 ---
 
