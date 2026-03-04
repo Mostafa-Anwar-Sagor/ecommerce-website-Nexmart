@@ -367,7 +367,7 @@ MIT License — see [LICENSE](LICENSE)
 <div align="center">
   <p>Built with ❤️ by <strong>Mostafa Anwar Sagor</strong></p>
   <p>
-    <a href="https://linkedin.com/in/mostafa-anwar-sagor">LinkedIn</a> ·
+    <a href="https://www.linkedin.com/in/mostafa-anwar-3ab665350/">LinkedIn</a> ·
     <a href="https://github.com/mostafa-anwar-sagor">GitHub</a>
   </p>
 </div>
